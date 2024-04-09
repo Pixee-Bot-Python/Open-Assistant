@@ -23,6 +23,7 @@ from pathlib import Path
 import numpy as np
 import polars as pl
 from tqdm import tqdm
+import fickling
 
 # TODO: OPTIONAL - Put the Untar process in a script instead of doing that part externally. Twitterstream archives are .tar with folders and json.gz files inside.
 # TODO: Set up list of important hashtags & keywords. This might have to be done after we get the original tweets in a separate file.
@@ -88,7 +89,7 @@ def get_file_paths(file_list_pkl, folder_path):
     # Based on code from stackoverflow https://stackoverflow.com/questions/26835477/pickle-load-variable-if-exists-or-create-and-save-it
     """
     try:
-        allpaths = pickle.load(open(file_list_pkl, "rb"))
+        allpaths = fickling.load(open(file_list_pkl, "rb"))
     except (OSError, IOError) as e:
         print(e)
         allpaths = sorted(list(folder_path.rglob("*.[gz bz2]*")))
@@ -100,7 +101,7 @@ def get_file_paths(file_list_pkl, folder_path):
 def get_processed_list(processed_file_list_pkl):
     # Gets processed file list if stored, if not, creates it.
     try:
-        processed_list = pickle.load(open(processed_file_list_pkl, "rb"))
+        processed_list = fickling.load(open(processed_file_list_pkl, "rb"))
     except (OSError, IOError) as e:
         print(e)
         processed_list = []

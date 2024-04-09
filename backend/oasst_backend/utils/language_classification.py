@@ -7,6 +7,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
+import fickling
 
 
 def load_and_split(foldername, num_words):
@@ -74,7 +75,7 @@ def main(foldername, modelname, num_words):
 
 def load(modelname):
     with open(modelname, "rb") as writer:
-        data = pickle.load(writer)
+        data = fickling.load(writer)
     return data
 
 

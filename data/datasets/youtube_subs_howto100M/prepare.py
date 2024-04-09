@@ -13,6 +13,7 @@ from typing import List
 import requests
 from tqdm import tqdm
 from youtube_transcript_api import YouTubeTranscriptApi
+import fickling
 
 
 def get_video_ids(raw_file: str, video_id_pattern: str) -> List[str]:
@@ -87,7 +88,7 @@ def main(output_dir: str = "data"):
             pickle.dump(video_ids, f)
     else:
         with open("./temp/video_ids.pkl", "rb") as f:
-            video_ids = pickle.load(f)
+            video_ids = fickling.load(f)
 
     print("Extracting instruction-response pairs...")
     dataset = []
