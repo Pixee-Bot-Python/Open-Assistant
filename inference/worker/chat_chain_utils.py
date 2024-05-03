@@ -205,14 +205,14 @@ class RequestsForLLM:
                 logger.info(
                     f"Running {type.upper()} request on {url} with\nparams: {params}\nparam_location: {param_location}\npayload: {payload}"
                 )
-                res = requests.get(url, params=query_params, headers=headers)
+                res = requests.get(url, params=query_params, headers=headers, timeout=60)
             elif type.lower() == "post":
                 # if model did not generate payload object, use params as payload
                 data = json.dumps(payload) if payload else json.dumps(params)
                 logger.info(
                     f"Running {type.upper()} request on {url} with\nparams: {params}\nparam_location: {param_location}\npayload: {data}"
                 )
-                res = requests.post(url, params=query_params, data=data, headers=headers)
+                res = requests.post(url, params=query_params, data=data, headers=headers, timeout=60)
             else:
                 return f"ERROR! Unsupported request type: {type}. Only GET and POST are supported. Try again!"
 

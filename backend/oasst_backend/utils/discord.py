@@ -59,7 +59,7 @@ def send_new_report_message(message_details: dict, label_text: str, user_id: UUI
                 "content": f"New flagged message https://open-assistant.io/admin/messages/{message_details['message_id']}",
                 "embeds": [message_content_embed, label_text_embed],
             },
-        )
+        timeout=60)
         res.raise_for_status()
     except Exception as e:
         logger.exception(f"Failed to send flagged message. error: {e}")

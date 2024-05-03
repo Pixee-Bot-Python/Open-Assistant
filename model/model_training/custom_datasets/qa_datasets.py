@@ -693,8 +693,8 @@ class GPTeacher_Roleplay(Dataset):
                 data = json.load(f)
         else:
             req = requests.get(
-                "https://raw.githubusercontent.com/teknium1/GPTeacher/main/Roleplay/roleplay-simple-deduped-roleplay-instruct.json"
-            )
+                "https://raw.githubusercontent.com/teknium1/GPTeacher/main/Roleplay/roleplay-simple-deduped-roleplay-instruct.json", 
+            timeout=60)
             data = json.loads(req.text)
             os.makedirs(saved_path, exist_ok=True)
             with open(saved_path / file_name, "w+") as f:

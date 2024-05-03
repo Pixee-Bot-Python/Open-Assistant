@@ -27,7 +27,7 @@ def get_all_filenames():
     This needs quite some mangling because of special cases (i.e. stackoverflow is not in one 7z archive).
     Ignore meta files.
     """
-    response = requests.get("https://archive.org/download/stackexchange")
+    response = requests.get("https://archive.org/download/stackexchange", timeout=60)
     if response.ok:
         soup = bs(response.content, "html.parser")
         table = soup.find("table")
@@ -50,7 +50,7 @@ def download_url(dataset_name: str, url: str):
         return cache_path
     else:
         print("Downloading xml: ", dataset_name)
-        response = requests.get(url)
+        response = requests.get(url, timeout=60)
         print("Finished downloading: ", dataset_name)
         with open(cache_path, "wb") as f:
             f.write(response.content)

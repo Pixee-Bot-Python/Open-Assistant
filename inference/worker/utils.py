@@ -258,11 +258,11 @@ class HttpClient(pydantic.BaseModel):
 
     def get(self, path: str, **kwargs):
         kwargs["headers"] = self._maybe_add_bearer_token(kwargs.get("headers"))
-        return requests.get(self.base_url + path, auth=self.auth, **kwargs)
+        return requests.get(self.base_url + path, auth=self.auth, **kwargs, timeout=60)
 
     def post(self, path: str, **kwargs):
         kwargs["headers"] = self._maybe_add_bearer_token(kwargs.get("headers"))
-        return requests.post(self.base_url + path, auth=self.auth, **kwargs)
+        return requests.post(self.base_url + path, auth=self.auth, **kwargs, timeout=60)
 
 
 def get_inference_server_stream_events(
