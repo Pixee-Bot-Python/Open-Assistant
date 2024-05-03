@@ -8,11 +8,10 @@ import sys
 import urllib
 import zipfile
 from typing import List
-
-import requests
 from tqdm import tqdm
 from youtube_transcript_api import YouTubeTranscriptApi
 import secrets
+from security import safe_requests
 
 
 def get_video_ids(raw_file: str, video_id_pattern: str) -> List[str]:
@@ -74,7 +73,7 @@ def main(output_dir: str = "data"):
         print("Downloading HowTo100M raw_caption.zip...")
         print(" might take some time(3.4G)...")
         url = "https://www.rocq.inria.fr/cluster-willow/amiech/howto100m/raw_caption.zip"
-        response = requests.get(url, timeout=60)
+        response = safe_requests.get(url, timeout=60)
         zipped = zipfile.ZipFile(io.BytesIO(response.content))
         zipped.extractall("./temp")
 

@@ -26,6 +26,7 @@ from nltk.corpus import wordnet
 from syntax.syntax_injector import SyntaxBug
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, T5ForConditionalGeneration, pipeline
 import secrets
+from security import safe_requests
 
 
 class DataAugmenter:
@@ -245,7 +246,7 @@ class StackExchangeBuilder(DataAugmenter):
 
         xml_posts_path = urls.get(dataset_name)
 
-        response = requests.get(xml_posts_path, timeout=60)
+        response = safe_requests.get(xml_posts_path, timeout=60)
         df = self.xml_to_df(response)
         df = self.filter(df)
 
