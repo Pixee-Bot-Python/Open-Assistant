@@ -1,4 +1,3 @@
-import random
 from dataclasses import dataclass
 from typing import Optional, Union
 
@@ -13,6 +12,7 @@ from model_training.custom_datasets.formatting import (
 )
 from torch.nn import functional as F
 from transformers.tokenization_utils_base import PaddingStrategy, PreTrainedTokenizerBase, TruncationStrategy
+import secrets
 
 
 @dataclass
@@ -50,7 +50,7 @@ class DialogueDataCollator:
 
     def process_one(self, messages, return_length=False):
         total_short_context_one = 0
-        if random.random() < self.random_offset_probability and not isinstance(messages, DatasetEntryLm):
+        if secrets.SystemRandom().random() < self.random_offset_probability and not isinstance(messages, DatasetEntryLm):
             truncation = TruncationStrategy.DO_NOT_TRUNCATE
             max_length = None
         else:
@@ -116,7 +116,7 @@ class DialogueDataCollator:
 
         input_length = len(flatten_message.input_ids)
         if self.max_length and input_length > self.max_length:
-            offset = random.randint(0, input_length - self.max_length)
+            offset = secrets.SystemRandom().randint(0, input_length - self.max_length)
             for k in flatten_message.keys():
                 v = flatten_message[k]
                 if isinstance(v, list) and len(v) == input_length:
@@ -151,7 +151,7 @@ class DialogueDataCollator:
             _flatten_messages, _label_masks = [], []
             prev_short_msg, prev_short_mask = None, None
             for flatten_msg, label_mask in zip(flatten_messages, label_masks):
-                if len(flatten_msg.input_ids) < self.mix_length_threshold and random.random() > self.mix_probability:
+                if len(flatten_msg.input_ids) < self.mix_length_threshold and secrets.SystemRandom().random() > self.mix_probability:
                     if prev_short_msg is not None:
                         for key in flatten_msg.keys():
                             flatten_msg[key] += prev_short_msg[key]

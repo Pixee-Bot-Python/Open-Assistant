@@ -1,10 +1,10 @@
 """Simple REPL frontend."""
 
 import http
-import random
 
 import requests
 import typer
+import secrets
 
 app = typer.Typer()
 
@@ -14,7 +14,7 @@ USER = {"id": "1234", "display_name": "John Doe", "auth_method": "local"}
 
 
 def _random_message_id():
-    return str(random.randint(1000, 9999))
+    return str(secrets.SystemRandom().randint(1000, 9999))
 
 
 def _render_message(message: dict) -> str:

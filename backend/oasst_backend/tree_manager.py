@@ -1,4 +1,3 @@
-import random
 from datetime import datetime, timedelta
 from enum import Enum
 from http import HTTPStatus
@@ -37,6 +36,7 @@ from oasst_shared.schemas import protocol as protocol_schema
 from oasst_shared.utils import utcnow
 from sqlalchemy.sql.functions import coalesce
 from sqlmodel import Session, and_, func, not_, or_, text, update
+import secrets
 
 
 class TaskType(Enum):
@@ -302,7 +302,7 @@ class TreeManager:
                 weights = [data["reply_ranked_1"] + 1 for data in author_data]
 
                 # first select an author
-                prompt_author_id: UUID = random.choices(author_ids, weights=weights)[0]
+                prompt_author_id: UUID = secrets.SystemRandom().choices(author_ids, weights=weights)[0]
                 logger.info(f"Selected random prompt author {prompt_author_id} among {len(author_data)} candidates.")
 
                 # select random prompt of author
@@ -325,7 +325,7 @@ class TreeManager:
                     logger.warning("No prompt candidates of selected author found.")
                     return False
 
-                winner_prompt = random.choice(prompt_candidates)
+                winner_prompt = secrets.choice(prompt_candidates)
                 message: Message = winner_prompt.Message
                 logger.info(f"Prompt lottery winner: {message.id=}")
 
@@ -514,7 +514,7 @@ class TreeManager:
                     incomplete_rankings = list(filter(lambda m: m.role == "assistant", incomplete_rankings))
 
                 if len(incomplete_rankings) > 0:
-                    ranking_parent_id = random.choice(incomplete_rankings).parent_id
+                    ranking_parent_id = secrets.choice(incomplete_rankings).parent_id
 
                     messages = self.pr.fetch_message_conversation(ranking_parent_id)
                     assert len(messages) > 0 and messages[-1].id == ranking_parent_id
@@ -524,7 +524,7 @@ class TreeManager:
                     replies = self.pr.fetch_message_children(ranking_parent_id, review_result=True, deleted=False)
 
                     assert len(replies) > 1
-                    random.shuffle(replies)  # hand out replies in random order
+                    secrets.SystemRandom().shuffle(replies)  # hand out replies in random order
                     reply_messages = prepare_conversation_message_list(replies)
                     if any(not m.synthetic for m in reply_messages):
                         reveal_synthetic = False
@@ -565,7 +565,7 @@ class TreeManager:
                     replies_need_review = list(filter(lambda m: m.role == "assistant", replies_need_review))
 
                 if len(replies_need_review) > 0:
-                    random_reply_message = random.choice(replies_need_review)
+                    random_reply_message = secrets.choice(replies_need_review)
                     messages = self.pr.fetch_message_conversation(random_reply_message)
 
                     conversation = prepare_conversation(messages)
@@ -580,7 +580,7 @@ class TreeManager:
                         valid_labels = self.cfg.labels_assistant_reply
                         if (
                             desired_task_type == protocol_schema.TaskRequestType.random
-                            and random.random() > self.cfg.p_full_labeling_review_reply_assistant
+                            and secrets.SystemRandom().random() > self.cfg.p_full_labeling_review_reply_assistant
                         ):
                             label_mode = protocol_schema.LabelTaskMode.simple
                             label_disposition = protocol_schema.LabelTaskDisposition.spam
@@ -605,7 +605,7 @@ class TreeManager:
                         valid_labels = self.cfg.labels_prompter_reply
                         if (
                             desired_task_type == protocol_schema.TaskRequestType.random
-                            and random.random() > self.cfg.p_full_labeling_review_reply_prompter
+                            and secrets.SystemRandom().random() > self.cfg.p_full_labeling_review_reply_prompter
                         ):
                             label_mode = protocol_schema.LabelTaskMode.simple
                             label_disposition = protocol_schema.LabelTaskDisposition.spam
@@ -647,11 +647,11 @@ class TreeManager:
                             if 0 < p.active_children_count < self.cfg.lonely_children_count
                             and p.parent_role == "prompter"
                         ]
-                        if len(lonely_children_parents) > 0 and random.random() < self.cfg.p_lonely_child_extension:
-                            random_parent = random.choice(lonely_children_parents)
+                        if len(lonely_children_parents) > 0 and secrets.SystemRandom().random() < self.cfg.p_lonely_child_extension:
+                            random_parent = secrets.choice(lonely_children_parents)
 
                     if random_parent is None:
-                        random_parent = random.choice(extendible_parents)
+                        random_parent = secrets.choice(extendible_parents)
 
                     # fetch random conversation to extend
                     logger.debug(f"selected {random_parent=}")
@@ -672,14 +672,14 @@ class TreeManager:
 
             case TaskType.LABEL_PROMPT:
                 assert len(prompts_need_review) > 0
-                message = random.choice(prompts_need_review)
+                message = secrets.choice(prompts_need_review)
                 message = self.pr.fetch_message(message.id)  # re-fetch message including emojis
 
                 label_mode = protocol_schema.LabelTaskMode.full
                 label_disposition = protocol_schema.LabelTaskDisposition.quality
                 valid_labels = self.cfg.labels_initial_prompt
 
-                if random.random() > self.cfg.p_full_labeling_review_prompt:
+                if secrets.SystemRandom().random() > self.cfg.p_full_labeling_review_prompt:
                     valid_labels = self.cfg.mandatory_labels_initial_prompt.copy()
                     label_mode = protocol_schema.LabelTaskMode.simple
                     label_disposition = protocol_schema.LabelTaskDisposition.spam
@@ -839,7 +839,7 @@ class TreeManager:
             logger.info(f"Tree entered terminal '{mts.state}' state ({mts.message_tree_id=})")
             root_msg = self.pr.fetch_message(message_id=mts.message_tree_id, fail_if_missing=False)
             if root_msg and was_active:
-                if random.random() < self.cfg.p_activate_backlog_tree:
+                if secrets.SystemRandom().random() < self.cfg.p_activate_backlog_tree:
                     self.activate_backlog_tree(lang=root_msg.lang)
 
                 if self.cfg.min_active_rankings_per_lang > 0:
@@ -1509,7 +1509,7 @@ LEFT JOIN message_reaction mr ON mr.task_id = t.id AND mr.payload_type = 'Rankin
     ) -> MessageTreeState:
         if goal_tree_size is None:
             if self.cfg.random_goal_tree_size and self.cfg.min_goal_tree_size < self.cfg.goal_tree_size:
-                goal_tree_size = random.randint(self.cfg.min_goal_tree_size, self.cfg.goal_tree_size)
+                goal_tree_size = secrets.SystemRandom().randint(self.cfg.min_goal_tree_size, self.cfg.goal_tree_size)
             else:
                 goal_tree_size = self.cfg.goal_tree_size
         return self._insert_tree_state(

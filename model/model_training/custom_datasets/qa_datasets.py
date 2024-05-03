@@ -4,7 +4,6 @@
 import glob
 import json
 import os
-import random
 import re
 from collections import defaultdict
 from pathlib import Path
@@ -18,6 +17,7 @@ from model_training.custom_datasets.formatting import DatasetEntry, create_datas
 from model_training.custom_datasets.utils import _filter_by_words
 from torch import Generator
 from torch.utils.data import Dataset, Subset, random_split
+import secrets
 
 # @agoryuno contributed this
 re_reference_remove = re.compile(r"\[\d+(?:,\s*\d+)*?\]")
@@ -485,7 +485,7 @@ class Vicuna(Dataset):
                     return None
                 elif speaker == "human":
                     # replace empty messages with one of the following
-                    message = random.choice(["...", "Please continue", "Go on", ""])
+                    message = secrets.choice(["...", "Please continue", "Go on", ""])
             # remove markdown escaping in revision 192ab2185289094fc556ec8ce5ce1e8e587154ca
             # python-markdownify with escape_asterisks & escape_underscores True is used
             # for pre-processing the dataset.
@@ -664,7 +664,7 @@ class AlpacaGpt4(Dataset):
             )
         # Concatenate the instruction and input.
         else:
-            linking_char = random.choice(LINKING_CHARS)
+            linking_char = secrets.choice(LINKING_CHARS)
             return create_dataset_entry_qa(
                 mode=self.mode,
                 questions=[f"{row['instruction']}{linking_char}{row['input']}"],

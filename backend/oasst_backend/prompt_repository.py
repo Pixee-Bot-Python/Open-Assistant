@@ -1,4 +1,3 @@
-import random
 import re
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -39,6 +38,7 @@ from oasst_shared.utils import unaware_to_utc, utcnow
 from sqlalchemy.orm import Query
 from sqlalchemy.orm.attributes import flag_modified
 from sqlmodel import JSON, Session, and_, func, literal_column, not_, or_, text, update
+import secrets
 
 _task_type_and_reaction = (
     (
@@ -688,9 +688,9 @@ class PromptRepository:
 
         if last_message_role:
             conv_messages = [m for m in messages_tree if m.role == last_message_role]
-            conv_messages = [random.choice(conv_messages)]
+            conv_messages = [secrets.choice(conv_messages)]
         else:
-            conv_messages = [random.choice(messages_tree)]
+            conv_messages = [secrets.choice(messages_tree)]
         messages_tree = {m.id: m for m in messages_tree}
 
         while True:

@@ -2,11 +2,11 @@
 
 import json
 import os
-import random
 import sys
 
 from datasets import load_dataset
 from tqdm import tqdm
+import secrets
 
 # adapted from https://colab.research.google.com/drive/1Sw3px5dP8whdqT7QMNoqwmqIasZkMbJi?usp=sharing
 
@@ -77,7 +77,7 @@ PRINT = len(sys.argv) > 1 and sys.argv[1] == "--print"
 def main(output_dir: str = "data"):
     """Download and prepare the dataset for use."""
 
-    random.seed(42)
+    secrets.SystemRandom().seed(42)
     dataset = load_dataset("allenai/soda")
     os.makedirs(output_dir, exist_ok=True)
 
@@ -103,7 +103,7 @@ def main(output_dir: str = "data"):
 
                 dialogue = [s2 + ": " + s1 for s1, s2 in zip(dat["dialogue"], dat["speakers"])]
 
-                if random.randint(0, 6) == 0:
+                if secrets.SystemRandom().randint(0, 6) == 0:
                     # print("##")
                     # print(f"User: Can you give me a short story description for this dialog?")
                     # print("  " + "\n  ".join(dialog))
@@ -116,7 +116,7 @@ def main(output_dir: str = "data"):
                     conversation = SUMMARY_TEMPLATE.format(dialogue="\n  ".join(dialogue), story=story, title=title)
                     if theme:
                         conversation = conversation + THEME_TEMPLATE.format(theme=theme)
-                elif random.randint(0, 6) == 0:
+                elif secrets.SystemRandom().randint(0, 6) == 0:
                     # print("##")
                     # print(f"User: Can you write a short dialog based on this story:\n  {story}")
                     # print(f"Assistant: Sure, a dialog for this story could be:")
@@ -131,7 +131,7 @@ def main(output_dir: str = "data"):
                     )
                     if theme:
                         conversation = conversation + THEME_TEMPLATE.format(theme=theme)
-                elif random.randint(0, 3) == 0:
+                elif secrets.SystemRandom().randint(0, 3) == 0:
                     # print("##")
                     # print(f"User: Can you write the next few lines of dialog for this scene:")
                     # if random.randint(0, 1) == 0:
@@ -153,9 +153,9 @@ def main(output_dir: str = "data"):
                     # if theme:
                     #     print("User: What would be one theme of this story?")
                     #     print(f'Assistant: One theme of this story could be: "{theme}"')
-                    if random.randint(0, 1) == 0:
+                    if secrets.SystemRandom().randint(0, 1) == 0:
                         depth = -5
-                    elif random.randint(0, 1) == 0:
+                    elif secrets.SystemRandom().randint(0, 1) == 0:
                         depth = -3
                     else:
                         depth = -4
@@ -167,7 +167,7 @@ def main(output_dir: str = "data"):
                     )
                     if theme:
                         conversation = conversation + THEME_TEMPLATE.format(theme=theme)
-                elif random.randint(0, 3) == 0:
+                elif secrets.SystemRandom().randint(0, 3) == 0:
                     # print("##")
                     # title1 = title.split(".")[0]
                     # title2 = title.split(".")[1]
@@ -197,18 +197,18 @@ def main(output_dir: str = "data"):
                     title1 = title.split(".")[0]
                     title2 = title.split(".")[1]
                     conversation = NEW_STORY_AND_DIALOGUE_TEMPLATE.format(title1=title1, story=story)
-                    if random.randint(0, 1) == 0:
+                    if secrets.SystemRandom().randint(0, 1) == 0:
                         conversation = FULL_DIALOGUE_TEMPLATE.format(
                             conversation=conversation, dialogue="\n  ".join(dialogue)
                         )
-                    elif random.randint(0, 1) == 0 and len(dialogue) > 5:
+                    elif secrets.SystemRandom().randint(0, 1) == 0 and len(dialogue) > 5:
                         conversation = MORE_DIALOGUE_TEMPLATE.format(
                             conversation=conversation,
                             dialogue1="\n  ".join(dialogue[:-5]),
                             title2=title2,
                             dialogue2="\n  ".join(dialogue[-5:]),
                         )
-                    elif random.randint(0, 1) == 0:
+                    elif secrets.SystemRandom().randint(0, 1) == 0:
                         conversation = NEXT_DIALOGUE_TEMPLATE.format(
                             conversation=conversation,
                             dialogue1="\n  ".join(dialogue[:-3]),

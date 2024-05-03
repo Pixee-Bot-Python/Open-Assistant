@@ -1,5 +1,4 @@
 import json
-import random
 import uuid
 from dataclasses import dataclass
 
@@ -9,8 +8,9 @@ import language_names
 import language_paraphrase
 import language_translate
 import pandas as pd
+import secrets
 
-random.seed(42)
+secrets.SystemRandom().seed(42)
 
 
 class DataProcess:
@@ -24,8 +24,8 @@ class DataProcess:
             if not ((original_lang == target_lang) and (original_lang is not None) and (target_lang is not None))
             else language_paraphrase.random_templates_paraphrase.get(original_lang, {})
         )
-        template = random.choice(list(templates.values()))
-        quote_pair = random.choice(DataProcess().random_quote)
+        template = secrets.choice(list(templates.values()))
+        quote_pair = secrets.choice(DataProcess().random_quote)
         opening_quote, closing_quote = quote_pair
         original_lang_name = DataProcess.language_name(None, original_lang, original_lang)
         target_lang_name = DataProcess.language_name(None, target_lang, original_lang)

@@ -1,6 +1,5 @@
 import enum
 import platform
-import random
 import uuid
 from datetime import datetime
 from typing import Annotated, Literal, Union
@@ -9,6 +8,7 @@ import psutil
 import pydantic
 import pynvml
 from oasst_shared.model_configs import ModelConfig
+import secrets
 
 INFERENCE_PROTOCOL_VERSION = "1"
 
@@ -195,7 +195,7 @@ class PluginUsed(pydantic.BaseModel):
 
 
 def make_seed() -> int:
-    return random.randint(0, 0xFFFF_FFFF_FFFF_FFFF - 1)
+    return secrets.SystemRandom().randint(0, 0xFFFF_FFFF_FFFF_FFFF - 1)
 
 
 class WorkParameters(pydantic.BaseModel):

@@ -1,7 +1,6 @@
 import argparse
 import gzip
 import json
-import random
 import re
 from collections import OrderedDict
 from datetime import datetime
@@ -13,6 +12,7 @@ import torch
 from model_training.models.peft_modeling import load_peft_model
 from tqdm import tqdm
 from transformers import AutoTokenizer, PreTrainedTokenizer
+import secrets
 
 QA_SPECIAL_TOKENS = {"Question": "<human>", "Answer": "<bot>", "StartPrefix": "<prefix>", "EndPrefix": "</prefix>"}
 QA_SPECIAL_TOKENS_V2_5 = {
@@ -286,7 +286,7 @@ def main():
     print("Device:", device)
 
     if args.seed:
-        random.seed(args.seed)
+        secrets.SystemRandom().seed(args.seed)
         torch.manual_seed(args.seed)
 
     # load configuration

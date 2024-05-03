@@ -1,7 +1,6 @@
 import argparse
 import copy
 import math
-import random
 from distutils.util import strtobool
 from pathlib import Path
 from typing import List, NamedTuple
@@ -22,6 +21,7 @@ from torch.utils.data import ConcatDataset, Dataset, Subset
 from torch.utils.data.distributed import DistributedSampler
 
 from .losses import CrossEntropyLoss, PolyLoss, RMCLSLoss, RMLoss
+import secrets
 
 
 def _strtobool(x):
@@ -100,26 +100,26 @@ class PerDatasetSampler(DistributedSampler):
         epoch_idx = []
         n = 0
 
-        random.seed(self.epoch + self.seed)
+        secrets.SystemRandom().seed(self.epoch + self.seed)
 
         for i in range(self.num_datasets):
-            sampled_idx = random.sample(range(n, self.dataset_sizes[i] + n), self.dataset_size_per_epoch[i])
+            sampled_idx = secrets.SystemRandom().sample(range(n, self.dataset_sizes[i] + n), self.dataset_size_per_epoch[i])
             n += self.dataset_sizes[i]
             epoch_idx.extend(sampled_idx)
 
         if self.samples_length is not None:
             # sort by samples length and in case of ties randomize
-            epoch_idx = sorted(epoch_idx, key=lambda x: (self.samples_length[x], random.random()))
+            epoch_idx = sorted(epoch_idx, key=lambda x: (self.samples_length[x], secrets.SystemRandom().random()))
 
             if self.shuffle:
                 # do some minor shuffling to avoid repeating the same order
                 # but not too much to avoid too much padding
                 # quasi random basically
                 for i in range(0, len(epoch_idx), 200):  # this should be batch_size dependent
-                    random.shuffle(epoch_idx[i : i + 200])
+                    secrets.SystemRandom().shuffle(epoch_idx[i : i + 200])
         else:
             if self.shuffle:
-                random.shuffle(epoch_idx)
+                secrets.SystemRandom().shuffle(epoch_idx)
 
         # split epoch_idx in world_size chunks
         epoch_idx = epoch_idx[self.rank : self.num_samples : self.world_size]

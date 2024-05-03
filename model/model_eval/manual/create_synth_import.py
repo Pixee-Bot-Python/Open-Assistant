@@ -1,6 +1,5 @@
 import argparse
 import json
-import random
 import re
 import sys
 from uuid import uuid4
@@ -8,6 +7,7 @@ from uuid import uuid4
 import pydantic
 from oasst_data import ExportMessageNode, ExportMessageTree
 from sampling_report import SamplingReport
+import secrets
 
 
 def filter_text(s: str) -> str:
@@ -70,7 +70,7 @@ def main():
                     else:
                         reply_by_prompt[p.prompt] = [m]
 
-    random.seed(args.seed)
+    secrets.SystemRandom().seed(args.seed)
     trees: list[ExportMessageTree] = []
     for k, v in reply_by_prompt.items():
         # remove exact duplicates
@@ -89,7 +89,7 @@ def main():
         prompt_message = ExportMessageNode(
             message_id=str(uuid4()), text=k, role="prompter", synthetic=False, lang=args.lang
         )
-        prompt_message.replies = random.sample(unique_replies, k=min(args.num_replies, len(unique_replies)))
+        prompt_message.replies = secrets.SystemRandom().sample(unique_replies, k=min(args.num_replies, len(unique_replies)))
         t = ExportMessageTree(message_tree_id=prompt_message.message_id, tree_state="ranking", prompt=prompt_message)
         trees.append(t)
         if args.max_count and len(trees) >= args.max_count:

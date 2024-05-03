@@ -1,9 +1,9 @@
 import json
 import os
-import random
 
 import kaggle
 import pandas as pd
+import secrets
 
 # Authenticate the Kaggle API client
 kaggle.api.authenticate()
@@ -116,15 +116,15 @@ for index, row in writing_tasks.iterrows():
     author = row["Poet"]
 
     # Variables to store to instruction, reply, source, and metadata.
-    instruction = random.choice(writing_prompts_topic).replace("$topic", str(topics))
-    reply = random.choice(replies_topic).replace("$topic", str(topics)).replace("$title", title).replace("$poem", poem)
+    instruction = secrets.choice(writing_prompts_topic).replace("$topic", str(topics))
+    reply = secrets.choice(replies_topic).replace("$topic", str(topics)).replace("$title", title).replace("$poem", poem)
     source = "PoetryFoundation.org" + " - " + author
     metadata = {"author": author, "title": title, "tags": str(topics), "task_type": "writing"}
 
     # If the entry has an empty value for the topic, use the non-topic prompts and replies.
     if pd.isna(topics):
-        instruction = random.choice(writing_prompts_notTopic)
-        reply = random.choice(replies_notTopic).replace("$title", title).replace("$poem", poem)
+        instruction = secrets.choice(writing_prompts_notTopic)
+        reply = secrets.choice(replies_notTopic).replace("$title", title).replace("$poem", poem)
 
     # Create a dictionary entry for the entry and append it to the list.
     entry = {"INSTRUCTION": instruction, "RESPONSE": reply, "SOURCE": source, "METADATA": json.dumps(metadata)}
@@ -139,8 +139,8 @@ for index, row in titling_tasks.iterrows():
     author = row["Poet"]
 
     # Variables to store to instruction, reply, source, and metadata.
-    instruction = random.choice(titling_prompts).replace("$poem", poem)
-    reply = random.choice(titling_replies).replace("$title", title)
+    instruction = secrets.choice(titling_prompts).replace("$poem", poem)
+    reply = secrets.choice(titling_replies).replace("$title", title)
     source = "PoetryFoundation.org" + " - " + author
     metadata = {"author": author, "title": title, "tags": str(topics), "task_type": "titling"}
 

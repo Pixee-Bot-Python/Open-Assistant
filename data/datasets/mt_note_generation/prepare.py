@@ -1,13 +1,13 @@
 import json
 import math
 import os
-import random
 import re
 import sys
 from string import punctuation
 
 import kaggle
 import pandas as pd
+import secrets
 
 CLINICAL_NOTE_GENERATION_TEMPLATE = """User: Write a clinical note about a patient with the following {section}: {section_information}.
 Rosey: {note}"""
@@ -65,7 +65,7 @@ def main(output_dir: str = "data"):
     kaggle.api.dataset_download_files("tboyle10/medicaltranscriptions", "data", unzip=True)
     mt_samples = preprocess(pd.read_csv("data/mtsamples.csv"))
     conversations = get_conversations(mt_samples)
-    random.shuffle(conversations)
+    secrets.SystemRandom().shuffle(conversations)
     train_limit = math.ceil(len(conversations) * 0.6)
     dev_limit = math.ceil(len(conversations) * 0.8)
     train, validation, test = (

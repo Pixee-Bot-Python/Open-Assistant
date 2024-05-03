@@ -17,12 +17,12 @@
 
 
 import os
-import random
 
 import rules
 import splits
 import tensorflow as tf
 from absl import app
+import secrets
 
 # Generation parameters:
 # TARGET_FOLDER = "/path/to/generate/dataset/"
@@ -74,7 +74,7 @@ def main(_):
 
     # Generate each of the splits:
     print("IID:")
-    random.seed(RANDOM_SEED)
+    secrets.SystemRandom().seed(RANDOM_SEED)
     (train_examples, test_examples) = splits.generate_training_and_test_sets_iid(
         N_INFERENCE_PROBLEMS,
         N_VARIATIONS,

@@ -6,10 +6,10 @@
     fill in the blanks : https://huggingface.co/datasets/m_lama
 
 """
-import random
 
 from datasets import load_dataset
 from torch.utils.data import Dataset
+import secrets
 
 # postfix prompt
 TRANSLATION_PROMPT = {
@@ -97,10 +97,10 @@ class TranslationPair(Dataset):
         return len(self.pairs)
 
     def __getitem__(self, index):
-        if random.random() < self.mix_prob and index > 5 and index < (self.length - 5):
-            additional = random.randint(0, 10) - 5
+        if secrets.SystemRandom().random() < self.mix_prob and index > 5 and index < (self.length - 5):
+            additional = secrets.SystemRandom().randint(0, 10) - 5
             while additional == index:
-                additional = random.randint(0, 10) - 5
+                additional = secrets.SystemRandom().randint(0, 10) - 5
 
             history_text = self.pairs[additional + index]
             question, answer = self.pairs[index]
@@ -117,11 +117,11 @@ class WMT2019(TranslationPair):
         src, tgt = pair.split("-")
         for row in dataset:
             row = row["translation"]
-            if random.random() > 0.5:
-                source = random.choice(TRANSLATION_PROMPT[tgt]).format(row[src])
+            if secrets.SystemRandom().random() > 0.5:
+                source = secrets.choice(TRANSLATION_PROMPT[tgt]).format(row[src])
                 self.pairs.append((source, row[tgt]))
             else:  # translating in reverse direction
-                source = random.choice(TRANSLATION_PROMPT[src]).format(row[tgt])
+                source = secrets.choice(TRANSLATION_PROMPT[src]).format(row[tgt])
                 self.pairs.append((source, row[src]))
             # WMT is very large, reduce preprocessing time
             if len(self.pairs) > maximum_size:
@@ -142,12 +142,12 @@ class DiveMT(TranslationPair):
             if lang_code not in TRANSLATION_PROMPT:
                 continue
 
-            if random.random() > 0.5:
-                source = random.choice(TRANSLATION_PROMPT[lang_code]).format(row[src])
+            if secrets.SystemRandom().random() > 0.5:
+                source = secrets.choice(TRANSLATION_PROMPT[lang_code]).format(row[src])
                 self.pairs.append((source, row[tgt]))
             else:  # translating in reverse direction
                 lang_code = "en"
-                source = random.choice(TRANSLATION_PROMPT[lang_code]).format(row[tgt])
+                source = secrets.choice(TRANSLATION_PROMPT[lang_code]).format(row[tgt])
                 self.pairs.append((source, row[src]))
 
 
@@ -160,11 +160,11 @@ class TEDTalk(TranslationPair):
         src, tgt = pair.split("-")
         for row in dataset:
             row = row["translation"]
-            if random.random() > 0.5:
-                source = random.choice(TRANSLATION_PROMPT[tgt]).format(row[src])
+            if secrets.SystemRandom().random() > 0.5:
+                source = secrets.choice(TRANSLATION_PROMPT[tgt]).format(row[src])
                 self.pairs.append((source, row[tgt]))
             else:  # translating in reverse direction
-                source = random.choice(TRANSLATION_PROMPT[src]).format(row[tgt])
+                source = secrets.choice(TRANSLATION_PROMPT[src]).format(row[tgt])
                 self.pairs.append((source, row[src]))
             # WMT is very large
             if len(self.pairs) > maximum_size:

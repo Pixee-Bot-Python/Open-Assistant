@@ -12,7 +12,6 @@ args:
 
 import argparse
 import json
-import random
 import string
 from collections import Counter
 
@@ -26,6 +25,7 @@ from logic.logic_injector import LogicBug
 from nltk.corpus import wordnet
 from syntax.syntax_injector import SyntaxBug
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, T5ForConditionalGeneration, pipeline
+import secrets
 
 
 class DataAugmenter:
@@ -97,8 +97,8 @@ class EssayReviser(DataAugmenter):
         # Make structure error (shuffle one paragraph with another)
         essay_paragraphs = essay.split("\n\n")  # Splitting a String by newline character (\n)
 
-        rand1 = random.randint(0, len(essay_paragraphs) - 1)
-        rand2 = random.randint(0, len(essay_paragraphs) - 1)
+        rand1 = secrets.SystemRandom().randint(0, len(essay_paragraphs) - 1)
+        rand2 = secrets.SystemRandom().randint(0, len(essay_paragraphs) - 1)
 
         temp = essay_paragraphs[rand1]
         essay_paragraphs[rand1] = essay_paragraphs[rand2]
@@ -110,13 +110,13 @@ class EssayReviser(DataAugmenter):
 
         essay_words = essay.split()
         for i in range(len(essay_words)):
-            if random.randint(0, 100) < 30:
+            if secrets.SystemRandom().randint(0, 100) < 30:
                 suggestion = []
                 for syn in wordnet.synsets(essay_words[i]):
                     for l in syn.lemmas():
                         suggestion.append(l.name())
                 if suggestion != []:
-                    essay_words[i] = suggestion[random.randint(0, len(suggestion) - 1)]
+                    essay_words[i] = suggestion[secrets.SystemRandom().randint(0, len(suggestion) - 1)]
 
         corrupted_essay = " ".join(essay_words)
 
@@ -124,8 +124,8 @@ class EssayReviser(DataAugmenter):
 
         # you can change the number 60 to change how much corrupted this essay will be
         for _ in range(len(essay) // 60):
-            rand = random.randint(0, len(essay))
-            corrupted_essay = essay[:rand] + random.choice(string.ascii_letters) + essay[rand + 1 :]
+            rand = secrets.SystemRandom().randint(0, len(essay))
+            corrupted_essay = essay[:rand] + secrets.choice(string.ascii_letters) + essay[rand + 1 :]
 
         instructions.append("Fix typing errors in this essay" + corrupted_essay)
 

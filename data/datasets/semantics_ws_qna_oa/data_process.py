@@ -1,19 +1,19 @@
 import json
-import random
 from dataclasses import dataclass
 
 import pandas as pd
 import random_stuff
 from datasets import load_dataset
+import secrets
 
-random.seed(42)
+secrets.SystemRandom().seed(42)
 
 
 # format to QnA
 def qna_wrapper():
     def create_qna(row):
         # make a random number
-        random_num = random.randint(0, 2)
+        random_num = secrets.SystemRandom().randint(0, 2)
 
         # extract rows' vals
         lang = row["Language"]
