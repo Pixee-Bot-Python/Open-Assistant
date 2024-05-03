@@ -1,10 +1,10 @@
-import random
 from collections import defaultdict
 from typing import List
 
 import numpy as np
 from datasets import load_dataset
 from torch.utils.data import Dataset
+import secrets
 
 SEED = 2020
 
@@ -173,7 +173,7 @@ class AugmentedOA(Dataset):
         # we want to prevent modifying user_answer_ranks
         rank = user_answer_ranks
         if len(bad_samples) > 0:
-            additional = random.choice(bad_samples)
+            additional = secrets.choice(bad_samples)
             rank = user_answer_ranks + [additional]
 
         return prefixes, rank

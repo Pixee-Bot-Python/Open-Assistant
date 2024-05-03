@@ -2,10 +2,10 @@
     SFT dataset to reject toxic questions
 
 """
-import random
 
 from datasets import load_dataset
 from torch.utils.data import Dataset
+import secrets
 
 
 class ProsocialDialogueExplaination(Dataset):
@@ -29,7 +29,7 @@ class ProsocialDialogueExplaination(Dataset):
         self.pairs = []
         for row in dataset:
             for safety_annotation, safe_answer in zip(row["safety_annotations"], row["safety_annotation_reasons"]):
-                (prompt_template, answer_template) = random.choice(self.TEMPLATE)
+                (prompt_template, answer_template) = secrets.choice(self.TEMPLATE)
                 self.pairs.append(
                     (
                         prompt_template.format(row["context"], safety_annotation),

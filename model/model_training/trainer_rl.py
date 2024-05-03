@@ -1,7 +1,6 @@
 import argparse
 import math
 import os
-import random
 from argparse import Namespace
 from typing import Sequence
 
@@ -20,6 +19,7 @@ from trlx.data.configs import TRLConfig
 from utils.ppo_utils import CustomPPOTrainer
 from utils.utils import _strtobool, get_dataset, get_model, init_rng, read_yamls
 from utils.utils_rl import prepare_tensor
+import secrets
 
 
 def argument_parsing(notebook: bool = False, notebook_args: Sequence[str] | None = None, **kwargs):
@@ -160,7 +160,7 @@ def main():
     if training_conf.num_eval_prompts is not None and training_conf.num_eval_prompts > 0:
         eval_prompts = eval_prompts[: training_conf.num_eval_prompts]
 
-    random.shuffle(prompts)
+    secrets.SystemRandom().shuffle(prompts)
     # Sanity Check for prompts to make sure it's loading properly
     with open(r"output.txt", "w") as fp:
         for item in eval_prompts:

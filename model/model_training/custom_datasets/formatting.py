@@ -1,11 +1,11 @@
 import re
 from enum import Enum
 from itertools import zip_longest
-from random import random, shuffle
 from typing import Literal, Optional
 
 from pydantic import BaseModel, validator
 from pydantic.fields import ModelField
+import secrets
 
 QA_SPECIAL_TOKENS = {
     "Question": "<|prompter|>",
@@ -72,7 +72,7 @@ class Utterance(BaseModel):
         if add_length:
             properties.append(("length", compute_length(self.text)))
 
-        shuffle(properties)
+        secrets.SystemRandom().shuffle(properties)
 
         # ensure that potentially multi-line conext field comes last
         if self.context:
@@ -80,7 +80,7 @@ class Utterance(BaseModel):
 
         fragments: list[str] = []
         for k, v in properties:
-            if random() < property_dropout:
+            if secrets.SystemRandom().random() < property_dropout:
                 continue
 
             if isinstance(v, float):

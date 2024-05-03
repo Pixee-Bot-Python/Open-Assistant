@@ -1,12 +1,12 @@
 import json
-import random
 import re
 from dataclasses import dataclass
 
 import pandas as pd
 from datasets import load_dataset
+import secrets
 
-random.seed(42)
+secrets.SystemRandom().seed(42)
 
 random_list_python = [
     "Make a python code.",
@@ -29,9 +29,9 @@ random_list_answer = [
 
 def qna_wrapper(source, random_list_python, random_list_answer):
     def create_qna(row):
-        instruction = row["question"] if source == "gsm8k" else row["input"] + " " + random.choice(random_list_python)
+        instruction = row["question"] if source == "gsm8k" else row["input"] + " " + secrets.choice(random_list_python)
         response = (
-            re.sub(r"(<<[\d\.\-\+\*=/\\]+>>)", "", row["answer"].replace("####", random.choice(random_list_answer)))
+            re.sub(r"(<<[\d\.\-\+\*=/\\]+>>)", "", row["answer"].replace("####", secrets.choice(random_list_answer)))
             + "."
             if source == "gsm8k"
             else row["code"]

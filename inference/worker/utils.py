@@ -1,5 +1,4 @@
 import collections
-import random
 import threading
 import time
 from typing import Iterable, Literal
@@ -14,6 +13,7 @@ import websocket
 from loguru import logger
 from oasst_shared.schemas import inference
 from settings import settings
+import secrets
 
 shared_tokenizer_lock = threading.Lock()
 
@@ -176,7 +176,7 @@ def wait_for_inference_server(http: "HttpClient", timeout: int = 600):
         except (requests.HTTPError, requests.ConnectionError):
             if time.time() > time_limit:
                 raise
-            sleep_duration = random.uniform(0, 10)
+            sleep_duration = secrets.SystemRandom().uniform(0, 10)
             logger.warning(f"Inference server not ready. Retrying in {sleep_duration:.2f} seconds")
             time.sleep(sleep_duration)
         else:

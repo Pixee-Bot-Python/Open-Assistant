@@ -1,12 +1,12 @@
 import argparse
 import gzip
 import json
-import random
 from pathlib import Path
 from typing import Optional
 
 import pydantic
 from oasst_data import ExportMessageTree
+import secrets
 
 
 def load_message_trees(
@@ -101,7 +101,7 @@ def parse_args():
 def main():
     args = parse_args()
     lang_codes = args.lang.split(",")
-    random.seed(args.seed)
+    secrets.SystemRandom().seed(args.seed)
     trees = load_message_trees(
         args.input_file,
         lang_codes=lang_codes,
@@ -111,7 +111,7 @@ def main():
     print(f"Matching messages trees: {len(trees)}")
     assert len(trees) > args.k, f"Not enough trees ({len(trees)} found, {args.k} required)"
 
-    sub_sample = random.sample(trees, k=args.k)
+    sub_sample = secrets.SystemRandom().sample(trees, k=args.k)
 
     if args.only_prompts:
         sub_sample = [x.prompt for x in sub_sample]

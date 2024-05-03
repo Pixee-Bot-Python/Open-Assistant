@@ -3,7 +3,6 @@ import json
 import math
 import os
 import pickle
-import random
 import re
 import sys
 import urllib
@@ -13,6 +12,7 @@ from typing import List
 import requests
 from tqdm import tqdm
 from youtube_transcript_api import YouTubeTranscriptApi
+import secrets
 
 
 def get_video_ids(raw_file: str, video_id_pattern: str) -> List[str]:
@@ -103,7 +103,7 @@ def main(output_dir: str = "data"):
     print(f"Total {len(dataset)} pairs extracted.")
 
     print("Splitting and saving data...")
-    random.shuffle(dataset)
+    secrets.SystemRandom().shuffle(dataset)
     train_limit = math.ceil(len(dataset) * 0.6)  # TODO: parameterize ratios
     dev_limit = math.ceil(len(dataset) * 0.8)
     train, validation, test = (

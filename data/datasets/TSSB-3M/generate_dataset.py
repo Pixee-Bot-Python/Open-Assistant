@@ -2,11 +2,11 @@
 """
 
 import json
-import random
 import re
 from os.path import join
 
 from tqdm import tqdm
+import secrets
 
 INSTRUCTIONS_LIST = [
     "Find the bug in the following code:",
@@ -48,12 +48,12 @@ RESPONSE_PREFIX_WORDS = [
 
 
 def gen_instruction():
-    idx = random.randint(0, len(INSTRUCTIONS_LIST) - 1)
+    idx = secrets.SystemRandom().randint(0, len(INSTRUCTIONS_LIST) - 1)
     return INSTRUCTIONS_LIST[idx]
 
 
 def gen_response_prefix():
-    idx = random.randint(0, len(RESPONSE_PREFIX_WORDS) - 1)
+    idx = secrets.SystemRandom().randint(0, len(RESPONSE_PREFIX_WORDS) - 1)
     return RESPONSE_PREFIX_WORDS[idx]
 
 

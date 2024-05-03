@@ -7,12 +7,12 @@
 """
 import glob
 import json
-import random
 import sys
 from collections import defaultdict
 from copy import deepcopy
 
 from fastlangid.langid import LID
+import secrets
 
 langid = LID()
 total_ranks = []
@@ -173,7 +173,7 @@ if __name__ == "__main__":
         for row in new_dataset:
             f.write(json.dumps(row) + "\n")
 
-    random.shuffle(RM_dataset)
+    secrets.SystemRandom().shuffle(RM_dataset)
     train_flag = int(len(RM_dataset) * 0.8)
     test_flag = int(len(RM_dataset) * 0.9)
     train, test, val = RM_dataset[:train_flag], RM_dataset[train_flag:test_flag], RM_dataset[test_flag:]

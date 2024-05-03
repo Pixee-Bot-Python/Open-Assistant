@@ -1,11 +1,11 @@
 """
     Summarize different spectrum of documents
 """
-import random
 
 import numpy as np
 from datasets import load_dataset
 from torch.utils.data import Dataset
+import secrets
 
 SUMMARIZATION_SPECIAL_TOKENS = {"Text": "", "Summary": ["TL;DR:", "Summarize this", "Give me the summary"]}
 
@@ -72,9 +72,9 @@ class SummarizationDataset(Dataset):
         text, summary = data[self.text_column], data[self.summary_column]
         text, summary = self.preprocess_fn(text, summary)
         if self.name in SUMMARY_SPECIAL_PROMPT:
-            prompt = random.choice(SUMMARIZATION_SPECIAL_TOKENS["Summary"])
+            prompt = secrets.choice(SUMMARIZATION_SPECIAL_TOKENS["Summary"])
         else:
-            prompt = random.choice(SUMMARIZATION_SPECIAL_TOKENS["Summary"])
+            prompt = secrets.choice(SUMMARIZATION_SPECIAL_TOKENS["Summary"])
 
         context = "".join([SUMMARIZATION_SPECIAL_TOKENS["Text"], " ".join(text.split(" ")[: self.max_words]), prompt])
         return (context, summary)
@@ -148,7 +148,7 @@ class HFSummaryPairs(Dataset):
         context = self.posts[index]
         # return pairs of comparison
         good_summary, bad_summary = self.summary_pairs[index]
-        prompt = random.choice(SUMMARIZATION_PROMPTS)
+        prompt = secrets.choice(SUMMARIZATION_PROMPTS)
 
         # pair very big
         # we are going to do some sampling
@@ -251,7 +251,7 @@ class HFSummary(Dataset):
         context = self.index2summary[index]
         # return pairs of comparison
         rows = self.summaries[context]
-        prompt = random.choice(SUMMARIZATION_PROMPTS)
+        prompt = secrets.choice(SUMMARIZATION_PROMPTS)
 
         # pair very big
         # we are going to do some sampling

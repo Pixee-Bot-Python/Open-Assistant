@@ -1,6 +1,5 @@
 import argparse
 import json
-import random
 from enum import IntEnum
 from pathlib import Path
 from subprocess import run
@@ -13,6 +12,7 @@ from model_training.utils.utils import _strtobool, get_dataset, get_dataset_frac
 from tokenizer import build_tokenizer
 from torch.utils.data import ConcatDataset, Dataset, Subset
 from tqdm import tqdm
+import secrets
 
 
 class IntRole(IntEnum):
@@ -375,7 +375,7 @@ def main():
         print(f"{k}: {v}")
 
     # initialize random states for reproducibility
-    random.seed(args.rng_seed)
+    secrets.SystemRandom().seed(args.rng_seed)
     np.random.seed(args.rng_seed)
     torch.manual_seed(args.rng_seed)
 

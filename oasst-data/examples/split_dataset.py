@@ -1,7 +1,7 @@
 import argparse
-import random
 
 from oasst_data import read_message_list, write_messages
+import secrets
 
 
 def parse_args():
@@ -43,7 +43,7 @@ def main():
     print(f"Found {len(messages)} matching messages.")
 
     tree_ids = list(set(m.message_tree_id for m in messages))
-    random.shuffle(tree_ids)
+    secrets.SystemRandom().shuffle(tree_ids)
 
     val_size = len(tree_ids) * args.val_percent // 100
 

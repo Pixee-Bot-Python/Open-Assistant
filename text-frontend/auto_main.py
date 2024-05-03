@@ -1,12 +1,12 @@
 """Simple REPL frontend."""
 
 import http
-import random
 from uuid import uuid4
 
 import requests
 import typer
 from faker import Faker
+import secrets
 
 app = typer.Typer()
 fake = Faker()
@@ -37,7 +37,7 @@ def main(
         return response.json()
 
     def gen_random_text():
-        return " ".join([random.choice(["hello", "world", "foo", "bar"]) for _ in range(10)])
+        return " ".join([secrets.choice(["hello", "world", "foo", "bar"]) for _ in range(10)])
 
     def gen_random_ranking(messages):
         """rank messages randomly and return list of indexes in order of rank randomly"""
@@ -45,7 +45,7 @@ def main(
         print(messages)
         print(len(messages))
         ranks = [i for i in range(len(messages))]
-        shuffled = random.shuffle(ranks)
+        shuffled = secrets.SystemRandom().shuffle(ranks)
         print(ranks)
         print(shuffled)
         return ranks
@@ -108,15 +108,15 @@ def main(
 
                     labels_dict = None
                     if task["mode"] == "simple" and len(valid_labels) == 1:
-                        answer = random.choice([True, False])
+                        answer = secrets.choice([True, False])
                         labels_dict = {valid_labels[0]: 1 if answer else 0}
                     else:
-                        labels = random.sample(valid_labels, random.randint(1, len(valid_labels)))
+                        labels = secrets.SystemRandom().sample(valid_labels, secrets.SystemRandom().randint(1, len(valid_labels)))
                         for l in mandatory_labels:
                             if l not in labels:
                                 labels.append(l)
-                        labels_dict = {label: random.random() for label in valid_labels}
-                    if random.random() < 0.9:
+                        labels_dict = {label: secrets.SystemRandom().random() for label in valid_labels}
+                    if secrets.SystemRandom().random() < 0.9:
                         labels_dict["spam"] = 0
                         labels_dict["lang_mismatch"] = 0
 
@@ -225,15 +225,15 @@ def main(
 
                     labels_dict = None
                     if task["mode"] == "simple" and len(valid_labels) == 1:
-                        answer = random.choice([True, False])
+                        answer = secrets.choice([True, False])
                         labels_dict = {valid_labels[0]: 1 if answer else 0}
                     else:
-                        labels = random.sample(valid_labels, random.randint(1, len(valid_labels)))
+                        labels = secrets.SystemRandom().sample(valid_labels, secrets.SystemRandom().randint(1, len(valid_labels)))
                         for l in mandatory_labels:
                             if l not in labels:
                                 labels.append(l)
-                        labels_dict = {label: random.random() for label in valid_labels}
-                    if random.random() < 0.9:
+                        labels_dict = {label: secrets.SystemRandom().random() for label in valid_labels}
+                    if secrets.SystemRandom().random() < 0.9:
                         labels_dict["spam"] = 0
                         labels_dict["lang_mismatch"] = 0
 
