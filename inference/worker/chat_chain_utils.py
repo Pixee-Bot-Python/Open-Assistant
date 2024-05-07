@@ -14,6 +14,7 @@ from oasst_shared.schemas import inference
 from openapi_parser import prepare_plugin_for_llm
 from settings import settings
 from utils import shared_tokenizer_lock, special_tokens
+from security import safe_requests
 
 RESPONSE_MAX_LENGTH = 2048
 DESCRIPTION_FOR_MODEL_MAX_LENGTH = 512
@@ -205,7 +206,7 @@ class RequestsForLLM:
                 logger.info(
                     f"Running {type.upper()} request on {url} with\nparams: {params}\nparam_location: {param_location}\npayload: {payload}"
                 )
-                res = requests.get(url, params=query_params, headers=headers, timeout=60)
+                res = safe_requests.get(url, params=query_params, headers=headers, timeout=60)
             elif type.lower() == "post":
                 # if model did not generate payload object, use params as payload
                 data = json.dumps(payload) if payload else json.dumps(params)

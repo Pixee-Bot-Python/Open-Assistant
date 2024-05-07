@@ -5,10 +5,11 @@ import requests
 import yaml
 from loguru import logger
 from oasst_shared.schemas import inference
+from security import safe_requests
 
 
 def fetch_openapi_spec(url):
-    response = requests.get(url, timeout=60)
+    response = safe_requests.get(url, timeout=60)
     if response.status_code != 200:
         raise Exception(f"Failed to fetch data from URL: {url}. Status code: {response.status_code}")
 
@@ -29,7 +30,7 @@ def fetch_openapi_spec(url):
 
 def get_plugin_config(url: str) -> inference.PluginConfig | None:
     try:
-        response = requests.get(url, timeout=60)
+        response = safe_requests.get(url, timeout=60)
         response.raise_for_status()
         plugin_dict = response.json()
         logger.info(f"Plugin config downloaded {plugin_dict}")

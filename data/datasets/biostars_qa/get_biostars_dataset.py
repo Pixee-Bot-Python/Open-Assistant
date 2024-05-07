@@ -4,8 +4,8 @@ import re
 import time
 
 import pandas as pd
-import requests
 from tqdm import tqdm
+from security import safe_requests
 
 
 def get_biostars_dataset(start_idx=9557161, accept_threshold=1000000, sleep=0.1, folder="biostars"):
@@ -41,7 +41,7 @@ def get_biostars_dataset(start_idx=9557161, accept_threshold=1000000, sleep=0.1,
             print(f"MSG: {file} exists. Skipping; Current accepted: {has_accepted_count}")
             continue
 
-        r = requests.get(url, headers=headers, timeout=60)
+        r = safe_requests.get(url, headers=headers, timeout=60)
 
         # print(r.status_code, r.reason)
 

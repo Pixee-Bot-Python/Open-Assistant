@@ -14,6 +14,7 @@ from loguru import logger
 from oasst_shared.schemas import inference
 from settings import settings
 import secrets
+from security import safe_requests
 
 shared_tokenizer_lock = threading.Lock()
 
@@ -258,7 +259,7 @@ class HttpClient(pydantic.BaseModel):
 
     def get(self, path: str, **kwargs):
         kwargs["headers"] = self._maybe_add_bearer_token(kwargs.get("headers"))
-        return requests.get(self.base_url + path, auth=self.auth, **kwargs, timeout=60)
+        return safe_requests.get(self.base_url + path, auth=self.auth, **kwargs, timeout=60)
 
     def post(self, path: str, **kwargs):
         kwargs["headers"] = self._maybe_add_bearer_token(kwargs.get("headers"))

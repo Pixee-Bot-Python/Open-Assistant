@@ -3,14 +3,13 @@ import json
 import re
 from pathlib import Path
 from typing import List, Mapping, Optional, Sequence, Union
-
-import requests
 from datasets import load_dataset
 from model_training.custom_datasets.formatting import DatasetEntrySft, Role, Utterance
 from model_training.custom_datasets.oasst_dataset import ListDataset
 from model_training.custom_datasets.utils import _filter_by_words
 from torch import Generator, randperm
 from torch.utils.data import Dataset, random_split
+from security import safe_requests
 
 
 def load_oig_file(
@@ -34,7 +33,7 @@ def load_oig_file(
     # download file if not cached
     if not local_path.exists() or local_path.stat().st_size == 0 or no_cache:
         print(f"downloading {source_url} to {local_path}")
-        r = requests.get(source_url, stream=True, timeout=60)
+        r = safe_requests.get(source_url, stream=True, timeout=60)
         with local_path.open(mode="wb") as fd:
             for chunk in r.iter_content(chunk_size=1024 * 1024):
                 fd.write(chunk)
